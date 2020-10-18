@@ -25,8 +25,7 @@ class PlayPauseButton extends StatefulWidget {
   _PlayPauseButtonState createState() => _PlayPauseButtonState();
 }
 
-class _PlayPauseButtonState extends State<PlayPauseButton>
-    with TickerProviderStateMixin {
+class _PlayPauseButtonState extends State<PlayPauseButton> with TickerProviderStateMixin {
   YoutubePlayerController _controller;
   AnimationController _animController;
 
@@ -34,7 +33,6 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
   void initState() {
     super.initState();
     _animController = AnimationController(
-      vsync: this,
       value: 0,
       duration: Duration(milliseconds: 300),
     );
@@ -63,9 +61,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
     super.dispose();
   }
 
-  void _playPauseListener() => _controller.value.isPlaying
-      ? _animController.forward()
-      : _animController.reverse();
+  void _playPauseListener() => _controller.value.isPlaying ? _animController.forward() : _animController.reverse();
 
   @override
   Widget build(BuildContext context) {
@@ -74,16 +70,13 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
         _playerState == PlayerState.playing ||
         _playerState == PlayerState.paused) {
       return Visibility(
-        visible: _playerState == PlayerState.cued ||
-            !_controller.value.isPlaying ||
-            _controller.value.isControlsVisible,
+        visible:
+            _playerState == PlayerState.cued || !_controller.value.isPlaying || _controller.value.isControlsVisible,
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(50.0),
-            onTap: () => _controller.value.isPlaying
-                ? _controller.pause()
-                : _controller.play(),
+            onTap: () => _controller.value.isPlaying ? _controller.pause() : _controller.play(),
             child: AnimatedIcon(
               icon: AnimatedIcons.play_pause,
               progress: _animController.view,

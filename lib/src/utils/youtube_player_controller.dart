@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:webview_media/webview_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../enums/playback_rate.dart';
 import '../enums/player_state.dart';

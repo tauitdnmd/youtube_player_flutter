@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:webview_media/platform_interface.dart';
-import 'package:webview_media/webview_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../enums/player_state.dart';
 import '../utils/youtube_meta_data.dart';
@@ -34,10 +34,8 @@ class RawYoutubePlayer extends StatefulWidget {
   _RawYoutubePlayerState createState() => _RawYoutubePlayerState();
 }
 
-class _RawYoutubePlayerState extends State<RawYoutubePlayer>
-    with WidgetsBindingObserver {
-  final Completer<WebViewController> _webController =
-      Completer<WebViewController>();
+class _RawYoutubePlayerState extends State<RawYoutubePlayer> with WidgetsBindingObserver {
+  final Completer<WebViewController> _webController = Completer<WebViewController>();
   YoutubePlayerController controller;
   PlayerState _cachedPlayerState;
   bool _isPlayerReady = false;
@@ -58,8 +56,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        if (_cachedPlayerState != null &&
-            _cachedPlayerState == PlayerState.playing) {
+        if (_cachedPlayerState != null && _cachedPlayerState == PlayerState.playing) {
           controller?.play();
         }
         break;
@@ -81,12 +78,11 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
       child: WebView(
         key: widget.key,
         userAgent: userAgent,
-        initialData: WebData(
-          data: player,
-          baseUrl: 'https://www.youtube.com',
-          encoding: 'utf-8',
+        initialUrl: Uri.dataFromString(
+          player,
+          encoding: Encoding.getByName('utf-8'),
           mimeType: 'text/html',
-        ),
+        ).toString(),
         javascriptMode: JavascriptMode.unrestricted,
         initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
         javascriptChannels: {
@@ -179,8 +175,7 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
             name: 'Errors',
             onMessageReceived: (JavascriptMessage message) {
               controller.updateValue(
-                controller.value
-                    .copyWith(errorCode: int.tryParse(message.message) ?? 0),
+                controller.value.copyWith(errorCode: int.tryParse(message.message) ?? 0),
               );
             },
           ),
